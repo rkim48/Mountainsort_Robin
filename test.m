@@ -1,4 +1,3 @@
-% working_dir = '/Volumes/xieluanlabs/xl_stimulation/Robin/ML_code';
 working_dir = pwd;
 %% Use conda m-file to switch to conda environment with Mountainsort code
 
@@ -7,7 +6,7 @@ conda.getenv
 % Set environment
 conda.setenv('mountainlab')
 %%
-input_dir = '/media/robin/Shared/ML_code/data';
+input_dir = uigetdir;
 output_dir = input_dir;
 files = dir(input_dir); file_names ={files.name};
 file_name = file_names{3};
@@ -44,14 +43,11 @@ end
 
 fclose(fid);
 
-% Edit Paths and Map in copied .sh file
-
-% Input and output paths to corresponding animal/session
+% Edit arguments in copied .sh file
 A{1} = ['input_dir=',input_dir];
 A{2} = ['output_dir=',output_dir];
 A{3} = ['samplerate=',num2str(samplerate)];
 A{4} = ['file_name=',file_name];
-% Edit map 
 A{5} = ['geom_file=',geom_file];
 A{6} = ['clip_size=',num2str(clip_size)];
 A{7} = ['freq_min=',num2str(freq_min)];
@@ -74,7 +70,6 @@ end
 fclose(fid);
 
 fileattrib(bash_script_copy,'+x')
-
 
 system(['cd ', execute_path])
 system(strcat('./',copy_str));
