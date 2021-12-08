@@ -169,7 +169,7 @@ recordingFolders = recordingFolders(nameLength==(13+numel(additionalFileName))) 
 names = {recordingFolders.name};
 [c,ia,ib]=intersect(names,downfol); % check if folder is in the download list 
 recordingFolders=recordingFolders(ia);
-names=names(ia);
+names=names(ia);Maps
 
 
 

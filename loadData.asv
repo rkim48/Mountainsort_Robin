@@ -34,7 +34,7 @@ parfor i = 1:numel(file_names)  % use parfor to load Intan files in session fold
 end
 Fs= frequency_parameters.amplifier_sample_rate;
 
-writemda(concat_data,fullfile(input_dir,'data.mda'),'int16');
+writemda(concat_data,fullfile(output_dir,'data.mda'),'int16');
 
 cd(output_dir)
 
