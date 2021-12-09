@@ -70,10 +70,10 @@ ml-run-process ms3.isolation_metrics \
 #combine metrics
 ml-run-process ms3.combine_cluster_metrics \
 	--inputs \
-	metrics_list:$output_dir/cluster_metrics.json \
-	metrics_list:$output_dir/isolation_metrics_out.json \
+		metrics_list:$output_dir/cluster_metrics.json \
+		metrics_list:$output_dir/isolation_metrics_out.json \
 	--outputs \
-	metrics_out:$output_dir/combine_metrics_new.json \
+		metrics_out:$output_dir/combine_metrics_new.json \
 
 # Mountain View
 # You can do manual curation of clusters using Mountain View

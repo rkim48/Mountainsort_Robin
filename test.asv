@@ -1,40 +1,42 @@
-working_dir = pwd;
+addpath('mdaio/')
 %% Use conda m-file to switch to conda environment with Mountainsort code
 
+% Initialize
+conda.init
 % List available conda environments
 conda.getenv
 % Set environment
 conda.setenv('mountainlab2')
 
-%% Change ML config variables if needed
+%% Change ML config variables if needed 
 
-
+% system('ml-config')
 % system('ML_PACKAGE_SEARCH_DIRECTORY=/home/robin/miniconda3/envs/mountainlab2/etc/mountainlab/packages')
 % system('ML_CONFIG_FILE=/home/robin/miniconda3/envs/mountainlab2/etc/mountainlab/mountainlab.env')
 
-
 %%
-input_dir = uigetdir;
+working_dir = pwd;
+% input_dir = uigetdir;
 output_dir = fullfile(input_dir,'outputs'); mkdir(output_dir);
 files = dir(fullfile(input_dir,'*.mda')); file_names ={files.name};
 file_name = file_names{1};
 samplerate=20000;
 geom_file = 'geom.csv';
-clip_size=54;
+clip_size=60;
 freq_min=300;
 freq_max=5000;
 detect_interval=27;
-detect_threshold=4.5 * 10;
+detect_threshold=4.5;
 adjacency_radius=100;
 detect_sign=-1;
 
 bash_script = 'Mountainsort_Robin.sh';
-execute_path = '~/miniconda3/envs/mountainlab2/work_folder';
-copy_str = strcat(extractBefore(bash_script,'.sh'),'_copy.sh');
-bash_script_copy = fullfile(execute_path,copy_str);
+execute_dir = '~/miniconda3/envs/mountainlab2/work_folder';
+copy_str = strcat(extractBefore(bash_script,'.sh'),'_copy.sh'); 
+bash_script_copy = fullfile(execute_dir,copy_str); % make copy of original .sh file
 
 
-copyfile(bash_script,bash_script_copy);
+copyfile(bash_script,bash_script_copy);  % copy and move to execute directory 
 fileattrib(bash_script_copy,'+w')
 
 % Read in MountainSort .sh file and place each line in a cell
@@ -51,7 +53,7 @@ end
 
 fclose(fid);
 
-% Edit arguments in copied .sh file
+% Write arguments to copied .sh file
 A{1} = ['input_dir=',input_dir];
 A{2} = ['output_dir=',output_dir];
 A{3} = ['samplerate=',num2str(samplerate)];
@@ -79,7 +81,7 @@ fclose(fid);
 
 fileattrib(bash_script_copy,'+x')
 
-% system(['cd ', execute_path])
-cd(execute_path);
+cd(execute_dir);
 system(strcat('./',copy_str));
 
+cd(working_dir);

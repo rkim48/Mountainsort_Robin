@@ -1,3 +1,4 @@
+addpath('mdaio/')
 %% Use conda m-file to switch to conda environment with Mountainsort code
 
 % Initialize
@@ -15,17 +16,17 @@ conda.setenv('mountainlab2')
 
 %%
 working_dir = pwd;
-input_dir = uigetdir;
+% input_dir = uigetdir;
 output_dir = fullfile(input_dir,'outputs'); mkdir(output_dir);
 files = dir(fullfile(input_dir,'*.mda')); file_names ={files.name};
 file_name = file_names{1};
 samplerate=20000;
 geom_file = 'geom.csv';
-clip_size=54;
+clip_size=60;
 freq_min=300;
 freq_max=5000;
 detect_interval=27;
-detect_threshold=4.5 * 10;
+detect_threshold=4.5;
 adjacency_radius=100;
 detect_sign=-1;
 

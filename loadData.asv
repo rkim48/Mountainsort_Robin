@@ -12,21 +12,25 @@ file_names = file_names(di);
 selection = []; % list of accepted channels (start from index 1), if empty, use all channels
 load('pavlo_1x32_intanMap_v2.mat'); % 1x32 linear design
 %%
+dataSize  = sum([files.bytes]);
+nCH = numel(channel_map);
+estimatedLength = dataSize/216e6/nCH*3600*2e4; % not sure how this works...
 
 date_arr = '';
-concat_data=[];
+concat_data=zeros(nCH,ceil(estimatedLength),'single');
 parfor i = 1:numel(file_names)  % use parfor to load Intan files in session folder in parallel 
     [amplifier_data,amplifier_channels,frequency_parameters,~] = load_Intan_data_wrapper(fullfile(input_dir,file_names{i}),selection);
+    length(amplifier_data)
     concat_data = [concat_data, int16(amplifier_data*10)]; % multiply by 10 to save 1st decimal place when converting to int
 end
 
 Fs= frequency_parameters.amplifier_sample_rate;
 
 desired_length = ceil(length(concat_data)/Fs)*Fs;
-nZEROS = desired_length - length(concat_data);
-concat_data_appended = [concat_data zeros(size(concat_data,1),nZEROS)];
+append_zeros = desired_length - length(concat_data);
+concat_data = [concat_data append_zeros];
 
-writemda(concat_data_appended,fullfile(input_dir,'data.mda'),'int16');
+writemda(concat_data,fullfile(input_dir,'data.mda'),'int16');
 
 cd(output_dir)
 
