@@ -129,7 +129,7 @@ for layer_index=layernum
                     
                     ax=axes('Units','centimeters','position', [X(row,col) Y(row,col) Gw Gh]);
                     set(ax,'FontSize',8)
-                    %         set(ax,'FontWeight','bold')
+                    %         set(ax,'FontWeight','bold')test
                     
                     if Ch_Map(row,col)~=0
                         temp=Ch_Map(row,col);

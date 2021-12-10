@@ -12,8 +12,6 @@ file_names = file_names(di);
 selection = []; % list of accepted channels (start from index 1), if empty, use all channels
 load('pavlo_1x32_intanMap_v2.mat'); % 1x32 linear design
 %%
-
-date_arr = '';
 concat_data=[];
 parfor i = 1:numel(file_names)  % use parfor to load Intan files in session folder in parallel 
     [amplifier_data,amplifier_channels,frequency_parameters,~] = load_Intan_data_wrapper(fullfile(input_dir,file_names{i}),selection);
