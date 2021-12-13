@@ -18,13 +18,13 @@ for unit=1:numel(metrics.list)
     ISI_in_MS_bins = diff(double(unit_firing_times))/(Fs/1E3); % Intervals in miliseconds. 
     [counts] = histcounts(ISI_in_MS_bins,0:2.5:200); % 0 to 200 ms with 2.5 ms bins (paper below)
     % https://www.nature.com/articles/s41598-019-38924-w#Fig2
-    max_time = max(cell2mat(metrics.time))/Fs;
-   
-    metrics.avg_FR(unit)=numel(unit_firing_times)/max_time;
 
     metrics.firings_first_bin = counts(1);
     metrics.single(unit) = counts(1)/numel(unit_firing_times)<=0.01;
     metrics.violation(unit) = counts(1)/numel(unit_firing_times);
+    
+    max_time = max(cell2mat(metrics.time))/Fs;
+    metrics.avg_FR(unit)=numel(unit_firing_times)/max_time;
 
 % we allow one spike per min.
 end

@@ -15,21 +15,7 @@ conda.setenv('mountainlab2')
 % system('ML_CONFIG_FILE=/home/robin/miniconda3/envs/mountainlab2/etc/mountainlab/mountainlab.env')
 
 %%
-working_dir = pwd;
-% input_dir = uigetdir;
-output_dir = fullfile(input_dir,'outputs'); mkdir(output_dir);
-files = dir(fullfile(input_dir,'*.mda')); file_names ={files.name};
-file_name = file_names{1};
-samplerate=20000;
-geom_file = 'geom.csv';
-clip_size=60;
-freq_min=300;
-freq_max=5000;
-detect_interval=27;
-detect_threshold=4.5;
-adjacency_radius=100;
-detect_sign=-1;
-
+cd(working_dir)
 bash_script = 'Mountainsort_Robin.sh';
 execute_dir = '~/miniconda3/envs/mountainlab2/work_folder';
 copy_str = strcat(extractBefore(bash_script,'.sh'),'_copy.sh'); 

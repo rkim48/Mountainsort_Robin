@@ -2,7 +2,7 @@
 
 metrics = load([output_curated_name '.mat']);
 metrics =metrics.metrics;
-
+mkdir(fullfile(output_dir,'figures'))
 for unit = 1:numel(metrics.list)
     figure;
     subplot(2,1,1);
@@ -23,4 +23,6 @@ for unit = 1:numel(metrics.list)
     title_str = sprintf('%sunit %d with average firing rate: %.1f spikes/s',single_or_multi,unit,avg_FR);
     sgtitle(title_str);
     
+    saveas(gcf,fullfile(output_dir,'figures',sprintf('%sunit_%d.png',single_or_multi,unit)))
+    close
 end

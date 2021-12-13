@@ -80,7 +80,7 @@ ml-run-process ms3.combine_cluster_metrics \
 # Make sure to output the curated firings file in the GUI
 
 # Change input data to filt.mda if you want to see clusters in uV instead of standard deviations
-qt-mountainview --pre=$output_dir/pre.mda.prv \
-		--firings=$output_dir/firings_${file_name} \
-		--samplerate=$samplerate \
-		--cluster_metrics=$output_dir/combine_metrics_new.json
+#qt-mountainview --pre=$output_dir/pre.mda.prv \
+#		--firings=$output_dir/firings_${file_name} \
+#		--samplerate=$samplerate \
+#		--cluster_metrics=$output_dir/combine_metrics_new.json

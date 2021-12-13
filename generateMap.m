@@ -1,7 +1,8 @@
 % Intan channel 38 is the shallowest electrode while 25 is the deepest. 
 % Let channel 38 be at position (0,0). 
 function map = generateMap(Intan_ch,good_ch,save_dir)
-%     Intan_ch = [25 47 27 45 29 43 31 41 23 33 21 35 19 37 17 39 24 46 26 44 28 42 30 40 22 32 20 34 18 36 16 38];
+%     rhd_channels  = [25 47 27 45 29 43 31 41 23 33 21 35 19 37 17 39 24 46 26 44 28 42 30 40 22 32 20 34 18 36 16 38];
+%     rhs_channels = [27 16 26 17 25 18 24 19 28 23 29 22 30 21 31 20 4 15 5 14 6 13  7  12  3  8  2  9  1 10  0 11];
     Intan_ch = Intan_ch';
     nCH = numel(Intan_ch);
     pitch = 60; % um

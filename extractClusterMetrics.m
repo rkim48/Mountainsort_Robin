@@ -1,4 +1,3 @@
-
 cd(output_dir)
 
 [~,file_name,~] = fileparts(file_name);
@@ -36,10 +35,6 @@ list=unique(cluster);
 pdfCellArray=cell(1,size(list,1));
 
 WCList = zeros(numel(list),3);
-
-% Prepare saving structure
-mkdir('Refine_mountain')
-cd ('Refine_mountain')
 
 metrics.date=date;
 metrics.channel_map=map;
