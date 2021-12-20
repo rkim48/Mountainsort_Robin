@@ -1,17 +1,15 @@
-input_dir=/media/robin/Shared/ML_code/data
-output_dir=/media/robin/Shared/ML_code/data
-samplerate=20000
-file_name=2021-09-06_210906_210621.rhd
+input_dir=/run/user/1000/gvfs/smb-share:server=10.129.151.108,share=xieluanlabs/xl_stimulation/ICMS37/Intan/12-17_211217_113945
+output_dir=/media/robin/Shared/ICMS/ICMS37
+samplerate=30000
+file_name=data.mda
 geom_file=geom.csv
-clip_size=54
+clip_size=60
 freq_min=300
 freq_max=5000
 detect_interval=27
 detect_threshold=4.5
 adjacency_radius=100
 detect_sign=-1
-cd ~/miniconda3/envs/mountainlab/work_folder
-conda activate mountainlab
 
 # Run bandpass filter stage of Mountainsort
 ml-run-process ephys.bandpass_filter \
@@ -72,17 +70,17 @@ ml-run-process ms3.isolation_metrics \
 #combine metrics
 ml-run-process ms3.combine_cluster_metrics \
 	--inputs \
-	metrics_list:$output_dir/cluster_metrics.json \
-	metrics_list:$output_dir/isolation_metrics_out.json \
+		metrics_list:$output_dir/cluster_metrics.json \
+		metrics_list:$output_dir/isolation_metrics_out.json \
 	--outputs \
-	metrics_out:$output_dir/combine_metrics_new.json \
+		metrics_out:$output_dir/combine_metrics_new.json \
 
 # Mountain View
 # You can do manual curation of clusters using Mountain View
 # Make sure to output the curated firings file in the GUI
 
 # Change input data to filt.mda if you want to see clusters in uV instead of standard deviations
-qt-mountainview --pre=$output_dir/pre.mda.prv \
-		--firings=$output_dir/firings_${file_name} \
-		--samplerate=$samplerate \
-		--cluster_metrics=$output_dir/combine_metrics_new.json
+#qt-mountainview --pre=$output_dir/pre.mda.prv \
+#		--firings=$output_dir/firings_${file_name} \
+#		--samplerate=$samplerate \
+#		--cluster_metrics=$output_dir/combine_metrics_new.json

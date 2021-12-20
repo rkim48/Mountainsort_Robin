@@ -34,7 +34,7 @@ file_prefix = '';  % optional file prefix before the Intan timestamps
 % OR 211210_165550 (yyMMdd_HHmmss)
 
 [dt,di]=sort(datetime(cellfun(@(x) ['20' x(numel(file_prefix)+1:end-4)],file_names,...
-    'UniformOutput',false),'InputFormat','yyyy-MM-dd_yyMMdd_HHmmss'));
+    'UniformOutput',false),'InputFormat','*yyMMdd_HHmmss'));
 
 % [dt,di]=sort(datetime(cellfun(@(x) [x(numel(file_prefix)+1:end-4)],file_names,'UniformOutput',false),...
 %     'InputFormat','yyMMdd_HHmmss'));

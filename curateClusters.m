@@ -1,3 +1,4 @@
+function output_curated_name = curateClusters(output_metrics_name,output_dir,Fs)
 % Curation of clusters with user defined parameters
 metrics = load([output_metrics_name '.mat']);
 metrics =metrics.metrics;
@@ -20,7 +21,7 @@ for unit=1:numel(metrics.list)
     % https://www.nature.com/articles/s41598-019-38924-w#Fig2
 
     metrics.firings_first_bin = counts(1);
-    metrics.single(unit) = counts(1)/numel(unit_firing_times)<=0.01;
+    metrics.single(unit) = counts(1)/numel(unit_firing_times)<=0.02; % change from 1% to 2% 
     metrics.violation(unit) = counts(1)/numel(unit_firing_times);
     
     max_time = max(cell2mat(metrics.time))/Fs;
@@ -31,3 +32,4 @@ end
 
 output_curated_name = fullfile(output_dir,[metrics.date '_curated_cluster_metrics']);
 save(output_curated_name,'metrics')
+end

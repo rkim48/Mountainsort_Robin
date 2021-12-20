@@ -1,4 +1,4 @@
-function [amplifier_data,amplifier_channels,frequency_parameters,board_adc_data]=read_Intan_RHS(name,selectedChs)
+function [amplifier_data,amplifier_channels,frequency_parameters]=read_Intan_RHS(name,selectedChs)
 
 % read_Intan_RHS2000_file
 %

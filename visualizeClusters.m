@@ -1,4 +1,5 @@
 % Visualizing curated clusters
+function visualizeClusters(output_curated_name,output_dir,Fs)
 
 metrics = load([output_curated_name '.mat']);
 metrics =metrics.metrics;
@@ -20,9 +21,11 @@ for unit = 1:numel(metrics.list)
     histogram('BinEdges',0:2.5:200,'BinCounts',counts);
     avg_FR = metrics.avg_FR(unit);
     
-    title_str = sprintf('%sunit %d with average firing rate: %.1f spikes/s',single_or_multi,unit,avg_FR);
+    title_str = sprintf('%sunit %d with average firing rate: %.2f spikes/s',single_or_multi,unit,avg_FR);
     sgtitle(title_str);
     
     saveas(gcf,fullfile(output_dir,'figures',sprintf('%sunit_%d.png',single_or_multi,unit)))
     close
+end
+
 end

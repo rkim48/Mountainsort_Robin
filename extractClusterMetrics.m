@@ -1,3 +1,4 @@
+function output_metrics_name = extractClusterMetrics(output_dir,file_name,map,Fs)
 cd(output_dir)
 
 [~,file_name,~] = fileparts(file_name);
@@ -152,3 +153,4 @@ fprintf('Cluster metric extraction complete!\n')
 output_metrics_name = fullfile(output_dir,[metrics.date '_cluster_metrics']);
 
 save(output_metrics_name,'metrics')
+end
