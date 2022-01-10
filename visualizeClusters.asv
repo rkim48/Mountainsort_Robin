@@ -1,11 +1,8 @@
 % Visualizing curated clusters
-function visualizeClusters(output_curated_name,output_dir,Fs,animalID)
+function visualizeClusters(output_curated_name,output_dir,Fs)
 
 metrics = load([output_curated_name '.mat']);
 metrics =metrics.metrics;
-date_str = metrics.date;
-
-
 nCH = metrics.nCH;
 mkdir(fullfile(output_dir,'figures'))
 for unit = 1:nCH
@@ -70,7 +67,7 @@ for unit = 1:nCH
 %     metric_keys = {'Firing rate','Refractory violations 2.5ms','Unit type'};
 %     metric_values = {avg_FR, violations, unit_type};
     subplot(fig_rows,fig_cols,(fig_rows-1)*fig_cols+2);
-    y_start = 0.9; x_start = 0.1; line_spacing = 0.2; font_size = 12;
+    y_start = 0.9; x_start = 0.1; line_spacing = 0.; font_size = 12;
     
     text(x_start,y_start, title_str,'FontWeight','Bold','FontSize',font_size); 
     text(x_start,y_start - line_spacing, sprintf('Firing rate: %.2f Hz',avg_FR),'FontSize',font_size); 
@@ -92,8 +89,8 @@ for unit = 1:nCH
         single_or_multi = 'Multi-';
    end
     
-    title_str = sprintf('%s %s: Unit %d',date_str,animalID,unit);
-    sgtitle(title_str,'fontweight','bold');
+    title_str = sprintf('Unit %d',unit);
+    sgtitle(title_str);
     saveas(gcf,fullfile(output_dir,'figures',sprintf('%sunit_%d.png',single_or_multi,unit)))
     close
     

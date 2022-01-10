@@ -30,6 +30,7 @@ timestamps=timestamps(valid);
 cluster=cluster(valid);
 
 metrics.date=date;
+metrics.animalID = input('Please enter animal ID: ','s');
 metrics.nCH = nCH;
 metrics.channel_map=map;
 metrics.ch_idx_table = ch_idx_table;

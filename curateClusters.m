@@ -2,8 +2,9 @@ function output_curated_name = curateClusters(output_metrics_name,output_dir,Fs)
 % Curation of clusters with user defined parameters
 metrics = load([output_metrics_name '.mat']);
 metrics =metrics.metrics;
-
-for unit=1:numel(metrics.list)
+nCH = metrics.nCH;
+metrics.unit_type = cell(nCH,1);
+for unit=1:nCH
     
     wav = metrics.waveform{unit};
     wav_std = metrics.waveformStd{unit};
@@ -21,15 +22,22 @@ for unit=1:numel(metrics.list)
     % https://www.nature.com/articles/s41598-019-38924-w#Fig2
 
     metrics.firings_first_bin = counts(1);
-    metrics.single(unit) = counts(1)/numel(unit_firing_times)<=0.02; % change from 1% to 2% 
+    single_unit = counts(1)/numel(unit_firing_times)<=0.02; % change from 1% to 2% 
     metrics.violation(unit) = counts(1)/numel(unit_firing_times);
     
     max_time = max(cell2mat(metrics.time))/Fs;
     metrics.avg_FR(unit)=numel(unit_firing_times)/max_time;
+    
+    if single_unit
+        metrics.unit_type{unit}= 'Single unit';
+    else
+        metrics.unit_type{unit} = 'Multi-unit';
+    end
 
 % we allow one spike per min.
 end
 
 output_curated_name = fullfile(output_dir,[metrics.date '_curated_cluster_metrics']);
 save(output_curated_name,'metrics')
+fprintf('Cluster curation complete!\n')
 end

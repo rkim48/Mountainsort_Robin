@@ -1,6 +1,6 @@
-input_dir=/run/user/1000/gvfs/smb-share:server=10.129.151.108,share=xieluanlabs/xl_stimulation/ICMS37/Intan/12-17_211217_113945
-output_dir=/media/robin/Shared/ICMS/ICMS37
-samplerate=30000
+input_dir=/home/robin/server/ICMS36/Intan/raw_220107_150551
+output_dir=/media/robin/Shared/ICMS/ICMS36
+samplerate=20000
 file_name=data.mda
 geom_file=geom.csv
 clip_size=60

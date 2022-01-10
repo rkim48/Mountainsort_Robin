@@ -1,4 +1,4 @@
-function [amplifier_data,amplifier_channels,frequency_parameters]=read_Intan_RHS(name,selectedChs)
+function [amplifier_data,amplifier_channels,frequency_parameters,channel_struct]=read_Intan_RHS(name)
 
 % read_Intan_RHS2000_file
 %
@@ -294,9 +294,9 @@ if (data_present)
     fprintf(1, 'Allocating memory for data...\n');
 
     t = zeros(1, num_amplifier_samples);
-    if isempty(selectedChs)
-        selectedChs=1:num_amplifier_channels;
-    end
+
+    selectedChs=1:num_amplifier_channels;
+    
     amplifier_data = zeros(numel(selectedChs), num_amplifier_samples);
     if (dc_amp_data_saved ~= 0)
         dc_amplifier_data = zeros(num_amplifier_channels, num_amplifier_samples);

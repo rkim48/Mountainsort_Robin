@@ -19,7 +19,7 @@ conda.setenv('mountainlab2')
 % system('ML_CONFIG_FILE=/home/robin/miniconda3/envs/mountainlab2/etc/mountainlab/mountainlab.env')
 %% Specify sorting arguments 
 working_dir =  '/media/robin/Shared/mountainsort_Robin'; % change this
-input_dir = uigetdir;
+input_dir = uigetdir('/run/user/1000/gvfs/smb-share:server=10.129.151.108,share=xieluanlabs/xl_stimulation','Select folder with data');
 output_dir = fullfile(input_dir,'outputs'); mkdir(output_dir); % saves outputs to input_dir/outputs
 % output_dir = uigetdir;
 samplerate=20000;
@@ -31,60 +31,23 @@ detect_interval=27;
 detect_threshold=4.5;
 adjacency_radius=100;
 detect_sign=-1;
-%% Pass arguments to copy of Mountainsort bash script 
-addpath(working_dir)
-cd(working_dir)
-bash_script = 'Mountainsort_Robin.sh';
-% execute_dir = '~/miniconda3/envs/mountainlab2/work_folder';
-execute_dir = working_dir;
-copy_str = strcat(extractBefore(bash_script,'.sh'),'_copy.sh'); 
-bash_script_copy = fullfile(execute_dir,copy_str); % make copy of original .sh file
 
-copyfile(bash_script,bash_script_copy);  % copy and move to execute directory 
-fileattrib(bash_script_copy,'+w')
+M = MountainsortParams();
 
-% Read in MountainSort .sh file and place each line in a cell
-fid = fopen(bash_script_copy,'r');
-nn=1;
-tline = fgetl(fid);
-A{nn} = tline;
-
-while ischar(tline)
-    nn = nn+1;
-    tline = fgetl(fid);
-    A{nn} = tline;
-end
-
-fclose(fid);
-
-% Write arguments to copied .sh file
-A{1} = ['input_dir=',input_dir];
-A{2} = ['output_dir=',output_dir];
-A{3} = ['samplerate=',num2str(samplerate)];
-A{4} = ['file_name=',file_name];
-A{5} = ['geom_file=',geom_file];
-A{6} = ['clip_size=',num2str(clip_size)];
-A{7} = ['freq_min=',num2str(freq_min)];
-A{8} = ['freq_max=',num2str(freq_max)];
-A{9} = ['detect_interval=',num2str(detect_interval)];
-A{10} = ['detect_threshold=',num2str(detect_threshold)];
-A{11} = ['adjacency_radius=',num2str(adjacency_radius)];
-A{12} = ['detect_sign=',num2str(detect_sign)];
-
-fid = fopen(bash_script_copy, 'w');
-for nn = 1:numel(A)
-    if A{nn+1} == -1
-        fprintf(fid,'%s', A{nn});
-        break
-    else
-        fprintf(fid,'%s\n', A{nn});
-    end
-end
-fclose(fid);
-
-fileattrib(bash_script_copy,'+x')
+working_dir =  M.working_dir;
+input_dir = M.input_dir;
+output_dir = M.output_dir;
+file_name = M.file_name;
+samplerate = M.samplerate;
+geom_file = M.geom_file;
+clip_size = M.clip_size;
+freq_min = M.freq_min;
+freq_max = M.freq_max;
+detect_interval = M.detect_interval;
+detect_threshold = M.detect_threshold;
+adjacency_radius = M.adjacency_radius;
+detect_sign = M.detect_sign;
 %% Load channel map and sort Intan files by date
-selection = [];  % list of accepted channels (start from index 1), if empty, use all channels
 impedance_threshold = 2e6; % accept channels under 2 MOhm impedance
 
 files  = dir(fullfile(input_dir,'*.rhs'));
@@ -105,42 +68,71 @@ file_timestamps = regexp({files.name}, '(?<=_)[^-]+(?=\.)', 'match', 'once');
 file_names = file_names(di);
 %% Concatenate data 
 concat_data=[];
-parfor i = 1:numel(file_names)  % use parfor to load Intan files in session folder in parallel 
+% parfor i = 1:numel(file_names)  % use parfor to load Intan files in session folder in parallel 
+parfor i = 1:1
     if rhs == 1
-        [amplifier_data,amplifier_channels,frequency_parameters] = ...
-            load_IntanRHS_data_wrapper(fullfile(input_dir,file_names{i}),selection);
+        [amplifier_data,amplifier_channels,frequency_parameters,channel_struct] = ...
+            load_IntanRHS_data_wrapper(fullfile(input_dir,file_names{i}));
     else
-        [amplifier_data,amplifier_channels,frequency_parameters] = ...
-            load_IntanRHD_data_wrapper(fullfile(input_dir,file_names{i}),selection);
+        [amplifier_data,amplifier_channels,frequency_parameters,channel_struct] = ...
+            load_IntanRHD_data_wrapper(fullfile(input_dir,file_names{i}));
     end
     parsaveIntanStruct(amplifier_channels,frequency_parameters,working_dir);
-    % multiply by 10 to save 1st decimal place when converting to int
-    concat_data = [concat_data, int16(amplifier_data*10)]; 
+    concat_data = [concat_data, amplifier_data]; 
 end
 
 load('Intan_struct');
 
 all_impedances = [Intan_struct.amplifier_channels.electrode_impedance_magnitude];
 native_order = [Intan_struct.amplifier_channels.native_order];
-low_impedance_idx = all_impedances < impedance_threshold;
+low_impedance_idx = find(all_impedances < impedance_threshold);
 low_impedance_ch = native_order(low_impedance_idx);
 
 Fs= Intan_struct.frequency_parameters.amplifier_sample_rate;
 samplerate = Fs;
 desired_length = ceil(length(concat_data)/Fs)*Fs;
 nZEROS = desired_length - length(concat_data);
-concat_data = concat_data(low_impedance_ch+1,:); % add 1 for indexing
-concat_data_appended = [concat_data zeros(size(concat_data,1),nZEROS)];
+concat_data = concat_data(low_impedance_idx,:); 
 
-writemda(concat_data_appended,fullfile(input_dir,'data.mda'),'int16');
+
+
+
+%% Outlier rejection
+% nCH = size(concat_data,1);
+% stdNoise = zeros(nCH,1);
+% std2 = zeros(nCH,1);
+% for ch = 1:nCH
+%     chsig=single(concat_data(ch,:));
+%     chsigstd  = chsig;
+%     pr=prctile(chsig,[25 75]);
+%     pr25=pr(1); pr75=pr(2); chiqr= pr75-pr25;   
+%     UL = pr75+1.5*chiqr; LL = pr25-1.5*chiqr;
+%     chsigstd(chsig>UL)=nan;chsigstd(chsig<LL)=nan; % outlier reject
+%     stdNoise(ch)=nanstd(chsigstd);
+%     std2(ch) = std(chsig);
+% end
+concat_data = concat_data - mean(concat_data);
+concat_data_appended = [concat_data zeros(size(concat_data,1),nZEROS)];
+% multiply by 10 to save 1st decimal place when converting to int16
+writemda(int16(10*concat_data_appended),fullfile(input_dir,'data.mda'),'int16');
 
 clear concat data concat_data_appended amplifier_data
-
-% .mda file name for Mountainsorrt 
-files = dir(fullfile(input_dir,'*.mda')); file_names ={files.name};
-file_name = file_names{1};
 
 % Change geom.csv based on recorded channels
 cd(working_dir)
 [~,~,good_ch] = intersect(low_impedance_ch,sort(channel_map));
-map = generateMap(channel_map,good_ch,input_dir);
+[map, depth_idx] = generateMap(channel_map,good_ch,input_dir);
+
+
+%% Want to return channel index map
+
+% col 1 - 1:nCH where nCH is number of good channels 
+% col 2 - depth index (1 shallow, 32 deep)
+% col 3 - native Intan order (0-31)
+col1 = 1:numel(good_ch);
+col2 = depth_idx;
+col3 = good_ch; 
+channel_idx_map = array2table([col1' col2 col3],'VariableNames',{'1:nCH',');
+
+T = array2table(A,...
+    'VariableNames',{'Feet','Inches','Centimeters'})
