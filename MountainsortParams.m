@@ -72,6 +72,7 @@ function M = MountainsortParams
     
     % return structure with values to use in other functions 
     M.working_dir =  working_dir;
+    M.copy_str = copy_str;
     M.input_dir = input_dir;
     M.output_dir = output_dir;
     M.file_name = file_name;

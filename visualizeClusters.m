@@ -36,7 +36,7 @@ for unit = 1:nCH
         offset = metrics.ch_idx_table{ch,2};
         template = metrics.waveform{unit}(ch,:);
         X = 1:size(template,2);
-        template_w_offset = template + (nCH - offset)*50;
+        template_w_offset = template + (32 - offset)*50; % hard coded
         if min(template_w_offset) < min_val
             min_val = min(template_w_offset);
         end
@@ -46,11 +46,11 @@ for unit = 1:nCH
         plot(X,template_w_offset,'color',plot_color)
         hold on;
     end
-    ylim([min_val*1.2, max_val*1.1])
+    ylim([min_val-70, max_val+20])
     set(gca,'ytick',[])
     set(gca,'xtick',[])
     obj = scalebar('XLen',20,'XUnit','ms','YUnit','uV'); 
-    obj.Position = [5,min_val*1.1]; 
+    obj.Position = [5,min_val-30]; 
     obj.hTextX_Pos = [2,-15];
     obj.hTextY_Pos = [-2,0];
     title('Templates depth-ordered');

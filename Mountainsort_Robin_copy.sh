@@ -1,5 +1,5 @@
-input_dir=/home/robin/server/ICMS36/Intan/raw_220107_150551
-output_dir=/media/robin/Shared/ICMS/ICMS36
+input_dir=/media/robin/Shared/ML_code/data
+output_dir=/media/robin/Shared/ML_code/data/outputs
 samplerate=20000
 file_name=data.mda
 geom_file=geom.csv

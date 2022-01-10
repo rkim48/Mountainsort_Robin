@@ -11,13 +11,13 @@ function [map, depth_idx] = generateMap(channel_map,good_ch,save_dir)
         y_presort(i) =pitch * (i-1); 
     end
     
-    pos_arr = [(1:nCH)' flip(channel_map') y_presort]; % indices, Intan channels, y_coordinates
+    pos_arr = [(1:nCH)' flip(channel_map) y_presort]; % indices, Intan channels, y_coordinates
 
-    [sorted_Intan_ch,sorted_idx] = sort(flip(channel_map));
+    [sorted_Intan_ch,sorted_idx] = sort(channel_map);
     y = y_presort(sorted_idx);
     depth_idx = (y / pitch) + 1;
     
-    ordered_pos_arr =  [(1:nCH)' sorted_Intan_ch' y];  % pos_arr but ordered with respect to Intan channel order
+    ordered_pos_arr =  [(1:nCH)' sorted_Intan_ch y];  % pos_arr but ordered with respect to Intan channel order
 
     map = [x y];
     map = map(good_ch,:);

@@ -1,7 +1,4 @@
 % Setup file
-addpath('mdaio/')
-addpath('channel_maps/')
-addpath('util/')
 %% Use conda m-file to switch to conda environment with Mountainsort code
 % Initialize
 conda.init
@@ -21,6 +18,7 @@ conda.setenv('mountainlab2')
 M = MountainsortParams();
 
 working_dir =  M.working_dir;
+copy_str = M.copy_str;
 input_dir = M.input_dir;
 output_dir = M.output_dir;
 file_name = M.file_name;
@@ -33,7 +31,8 @@ detect_interval = M.detect_interval;
 detect_threshold = M.detect_threshold;
 adjacency_radius = M.adjacency_radius;
 detect_sign = M.detect_sign;
-%% Load channel map and sort Intan files by date
+
+% Load channel map and sort Intan files by date
 impedance_threshold = 2e6; % accept channels under 2 MOhm impedance
 
 files  = dir(fullfile(input_dir,'*.rhs'));
@@ -52,7 +51,8 @@ file_timestamps = regexp({files.name}, '(?<=_)[^-]+(?=\.)', 'match', 'once');
 % sort based on timestamps
 [dt,di]=sort(datetime(cellfun(@(x) x,file_timestamps,'UniformOutput',false),'InputFormat','yyMMdd_HHmmss'));
 file_names = file_names(di);
-%% Concatenate data 
+
+% Concatenate data 
 concat_data=[];
 parfor i = 1:numel(file_names)  % use parfor to load Intan files in session folder in parallel 
     if rhs == 1
@@ -84,7 +84,7 @@ concat_data_appended = [concat_data zeros(size(concat_data,1),nZEROS)];
 % multiply by 10 to save 1st decimal place when converting to int16
 writemda(int16(10*concat_data_appended),fullfile(input_dir,'data.mda'),'int16');
 
-clear concat data concat_data_appended amplifier_data
+clear concat_data concat_data_appended amplifier_data
 % Change geom.csv based on recorded channels
 cd(working_dir)
 [~,~,good_ch] = intersect(low_impedance_ch,sort(channel_map));
@@ -95,5 +95,5 @@ cd(working_dir)
 % col 3 - native Intan order (0-31)
 col1 = 1:numel(good_ch);
 col2 = depth_idx;
-col3 = good_ch; 
-ch_idx_table = array2table([col1' col2 col3],'VariableNames',{'1:nCH','Depth index','Native Intan order'});
+col3 = low_impedance_ch; 
+ch_idx_table = array2table([col1' col2 col3'],'VariableNames',{'1:nCH','Depth index','Native Intan order'});
