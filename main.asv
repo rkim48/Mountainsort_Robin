@@ -14,6 +14,7 @@ visualizeClusters(output_curated_name,output_dir,Fs,animalID);
 
 
 % manualCuration(output_curated_name,output_dir,Fs,animalID);
+
 %%
 cd(execute_dir)
 cd(output_dir)

@@ -64,7 +64,6 @@ depth_idx = ch_idx_table.('Depth index');
 for clu =1:numel(clusterID)
     
     fprintf('Extracting metrics from cluster #%d...\n',clu)
-    metrics.MS_metrics{clu} = val.clusters(clu).metrics;
     primary_ch = cluster_primary_ch(clu,2);
     metrics.cluster_info{clu} = [clu, primary_ch, native_order(primary_ch), depth_idx(primary_ch)];
 

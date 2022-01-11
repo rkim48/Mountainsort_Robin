@@ -1,5 +1,5 @@
-input_dir=/media/robin/Shared/ML_code/data
-output_dir=/media/robin/Shared/ML_code/data/outputs
+input_dir=/home/robin/server/ICMS38/Intan/raw_220107_154716
+output_dir=/media/robin/Shared/ICMS/ICMS38
 samplerate=20000
 file_name=data.mda
 geom_file=geom.csv
@@ -80,7 +80,7 @@ ml-run-process ms3.combine_cluster_metrics \
 # Make sure to output the curated firings file in the GUI
 
 # Change input data to filt.mda if you want to see clusters in uV instead of standard deviations
-#qt-mountainview --pre=$output_dir/pre.mda.prv \
-#		--firings=$output_dir/firings_${file_name} \
-#		--samplerate=$samplerate \
-#		--cluster_metrics=$output_dir/combine_metrics_new.json
+qt-mountainview --pre=$output_dir/filt_${file_name} \
+		--firings=$output_dir/firings_${file_name} \
+		--samplerate=$samplerate \
+		--cluster_metrics=$output_dir/combine_metrics_new.json

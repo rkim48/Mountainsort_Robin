@@ -5,10 +5,22 @@ metrics = load([output_curated_name '.mat']);
 metrics =metrics.metrics;
 date_str = metrics.date;
 
-nCLU = numel(metrics.clusterID);
 nCH = metrics.nCH;
 mkdir(fullfile(output_dir,'figures'))
-for unit = 1:nCLU
+accept_dir = fullfile(output_dir,'accepted');
+reject_dir = fullfile(output_dir,'rejected');
+idk_dir = fullfile(output_dir,'idk');
+if ~isfolder(accept_dir)
+    mkdir(accept_dir);
+end
+if ~isfolder(reject_dir)
+    mkdir(reject_dir);
+end
+if ~isfolder(idk_dir)
+    mkdir(idk_dir);
+end
+
+for unit = 1:nCH
     figure('WindowState','maximized');
     pause(1);
     fig_rows = 3;
@@ -94,8 +106,37 @@ for unit = 1:nCLU
     
     title_str = sprintf('%s %s: Unit %d',date_str,animalID,unit);
     sgtitle(title_str,'fontweight','bold');
-    saveas(gcf,fullfile(output_dir,'figures',sprintf('%sunit_%d.png',single_or_multi,unit)))
-    close
+    image = fullfile(output_dir,'figures',sprintf('%sunit_%d.png',single_or_multi,unit));
+    saveas(gcf,image)
+    
+    while 1
+        fprintf('Press y/n/d for accept/reject/idk\n');       
+        w=waitforbuttonpress;
+        if w
+            value = get(gcf, 'CurrentCharacter');
+        end
+        switch value
+            case 121         
+                fprintf('Yes\n');
+                text(0.5,0.5,'yes','Color','g','Fontsize',20);
+                movefile(image,accept_dir)
+                break
+            case 110
+                fprintf('No\n');
+                text(0.5,0.5,'No','Color','r','Fontsize',20);
+                movefile(image,reject_dir)
+                break
+            case 100
+                fprintf("Don't know\n");
+                text(0.5,0.5,"Don't know",'Color','blue','Fontsize',20);
+                movefile(image,idk_dir)
+                break
+            otherwise
+                fprintf('Error: Press y/n\n');
+        end
+        pause(0.5);
+        close;
+    end
     
 end
 fprintf('Cluster visualization complete!\n')
